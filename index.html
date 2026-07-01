@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Records & Project Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="seal"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <h1>County Records &amp; Project Portal</h1>
+    <div class="login-sub">Document &amp; Records Management System</div>
+    <div class="field">
+      <label>Sign in as</label>
+      <select id="login-user" onchange="switchLoginUser()" style="width:100%;padding:11px 13px;border:1.5px solid #E2E8F0;border-radius:9px;font-size:14px;font-family:'Inter',sans-serif;background:#FBFCFE;">
+        <option value="nickson">Nickson — Administrator</option>
+        <option value="james">James Mwangi — Records Officer</option>
+        <option value="sarah">Sarah Achieng — Manager</option>
+        <option value="brian">Brian Otieno — Viewer</option>
+      </select>
+    </div>
+    <div id="login-role-badge" class="role-badge">Administrator</div>
+    <div class="field"><label>Email Address</label><input type="email" id="login-email" value="nickson@portal.go.ke" /></div>
+    <div class="field"><label>Password</label><input type="password" value="xxxxxxxxxxx" /></div>
+    <div class="remember"><input type="checkbox" checked /> Remember me on this device</div>
+    <button class="btn-primary" onclick="login()">Sign In</button>
+    <div class="login-foot">PROTOTYPE BUILD — for internal review only</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-seal"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <div><div class="name">Records Portal</div><div class="sub">v0.1 PROTOTYPE</div></div>
+    </div>
+    <div class="navgroup">
+      <div class="navlabel">Overview</div>
+      <div class="navitem active" data-page="dashboard" onclick="go('dashboard',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="navlabel">Records</div>
+      <div class="navitem" data-page="projects" onclick="go('projects',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l3-3h6l2 2h7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+        Projects
+      </div>
+      <div class="navitem" data-page="memos" onclick="go('memos',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h4"/></svg>
+        Memo Management <span class="badge">12</span>
+      </div>
+      <div class="navitem" data-page="files" onclick="go('files',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+        File Library
+      </div>
+      <div class="navitem" data-page="assets" onclick="go('assets',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12l8.73-5.04M12 22.08V12"/></svg>
+        Assets Tracker
+      </div>
+      <div class="navitem" data-page="references" onclick="go('references',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        Reference Tracker
+      </div>
+      <div class="navlabel">Insights</div>
+      <div class="navitem" data-page="reports" onclick="go('reports',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 4 5-8"/></svg>
+        Reports
+      </div>
+      <div class="navitem" data-page="notifications" onclick="go('notifications',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        Notifications
+      </div>
+      <div class="navlabel">System</div>
+      <div class="navitem" data-page="users" onclick="go('users',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        Users
+      </div>
+      <div class="navitem" data-page="settings" onclick="go('settings',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.14.32.4.6.74.74H21a2 2 0 010 4h-.09c-.33.14-.6.4-.74.74"/></svg>
+        Settings
+      </div>
+    </div>
+    <div class="sb-foot">
+      <div style="margin-bottom:10px">Logged in as<br><b style="color:#D6DEEE" id="sb-username">Nickson</b><br><span id="sb-role" style="font-size:10px;color:#90A4D4">Administrator</span></div>
+      <div class="navitem" style="color:#F87171; margin:0; padding:8px 12px;" onclick="logout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input placeholder="Search reference no., payee, project..." />
+      </div>
+      <div class="topbar-right">
+        <div class="icon-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+          <span class="dot"></span>
+        </div>
+        <div class="user-chip">
+          <div class="avatar" id="topbar-avatar">NK</div>
+          <div><div class="uname" id="topbar-username">Nickson</div><div class="urole" id="topbar-role">Administrator</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-head">
+          <div><h1>Dashboard</h1><div class="sub">Overview of all projects, memos, and records — updated just now</div></div>
+          <div class="btn-row">
+            <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Export</button>
+            <button class="btn btn-navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>New Record</button>
+          </div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="icon" style="background:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7l3-3h6l2 2h7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div><div class="val">214</div><div class="lbl">Total Projects</div><div class="trend up">+6.2%</div></div>
+          <div class="kpi"><div class="icon" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div class="val">37</div><div class="lbl">Pending Memos</div><div class="trend down">-3.1%</div></div>
+          <div class="kpi"><div class="icon" style="background:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><div class="val">152</div><div class="lbl">Fully Surrendered</div><div class="trend up">+11%</div></div>
+          <div class="kpi"><div class="icon" style="background:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div><div class="val">468</div><div class="lbl">Assets Tracked</div><div class="trend up">+2.4%</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><h3>Monthly Expenditure</h3><a>View report →</a></div>
+            <div class="bars">
+              <div class="bar-col"><div class="bar" style="height:62px"></div><div class="bmonth">Jan</div></div>
+              <div class="bar-col"><div class="bar" style="height:88px"></div><div class="bmonth">Feb</div></div>
+              <div class="bar-col"><div class="bar" style="height:54px"></div><div class="bmonth">Mar</div></div>
+              <div class="bar-col"><div class="bar" style="height:110px"></div><div class="bmonth">Apr</div></div>
+              <div class="bar-col"><div class="bar" style="height:78px"></div><div class="bmonth">May</div></div>
+              <div class="bar-col"><div class="bar" style="height:130px"></div><div class="bmonth">Jun</div></div>
+              <div class="bar-col"><div class="bar" style="height:96px"></div><div class="bmonth">Jul</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Memo Status Distribution</h3></div>
+            <div class="donut-wrap">
+              <div class="donut"></div>
+              <div class="legend">
+                <div class="legend-item"><span class="legend-dot" style="background:var(--emerald)"></span>Surrendered — 38%</div>
+                <div class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>Pending — 27%</div>
+                <div class="legend-item"><span class="legend-dot" style="background:var(--navy-light)"></span>Partial — 20%</div>
+                <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>Overdue — 15%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><h3>Recent Activity</h3><a>View all →</a></div>
+            <div class="activity-list">
+              <div class="activity-item"><div class="act-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/></svg></div><div><div class="act-text"><b>James Mwangi</b> uploaded memo <b>MEMO-2026-0341</b> under AHP</div><div class="act-time">14 minutes ago</div></div></div>
+              <div class="activity-item"><div class="act-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><div><div class="act-text"><b>Reference CHF-2291</b> marked Fully Surrendered</div><div class="act-time">1 hour ago</div></div></div>
+              <div class="activity-item"><div class="act-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div><div><div class="act-text">New asset <b>"Toyota Hilux KDG 442B"</b> added to Office</div><div class="act-time">3 hours ago</div></div></div>
+              <div class="activity-item"><div class="act-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l3-3h6l2 2h7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div><div><div class="act-text">Project <b>Kibera Market Phase II</b> status updated</div><div class="act-time">Yesterday</div></div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Upcoming Deadlines</h3></div>
+            <div class="activity-list">
+              <div class="activity-item"><div class="act-icon" style="background:#FFFBEB"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><div class="act-text">Surrender deadline — <b>MEMO-2026-0298</b></div><div class="act-time">Due in 2 days</div></div></div>
+              <div class="activity-item"><div class="act-icon" style="background:#FEF2F2"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><div class="act-text">Overdue submission — <b>Markets Tender 0091</b></div><div class="act-time">3 days overdue</div></div></div>
+              <div class="activity-item"><div class="act-icon" style="background:#FFFBEB"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><div class="act-text">EIA report — <b>Power Connection Phase 3</b></div><div class="act-time">Due in 6 days</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECTS -->
+      <div class="page" id="page-projects">
+        <div class="page-head"><div><h1>Projects</h1><div class="sub">All active project categories</div></div></div>
+        <div class="proj-grid">
+          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div></div><h3>AHP</h3><div class="desc">Affordable Housing Programme records</div><div class="proj-stats"><div class="proj-stat"><div class="n">42</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">12</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:var(--emerald-dark)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 22h16M5 22V11l7-7 7 7v11"/><path d="M9 22v-6h6v6"/></svg></div></div><h3>Institutions</h3><div class="desc">Schools, health centres, public offices</div><div class="proj-stats"><div class="proj-stat"><div class="n">58</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">9</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9M4 9h16"/></svg></div></div><h3>Markets</h3><div class="desc">Market construction &amp; rehabilitation</div><div class="proj-stats"><div class="proj-stat"><div class="n">31</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">5</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div></div><h3>Office</h3><div class="desc">Internal office administration records</div><div class="proj-stats"><div class="proj-stat"><div class="n">24</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">3</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:#0891B2"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h7l-1 8 11-14h-7l1-6z"/></svg></div></div><h3>EIA &amp; Power Connection</h3><div class="desc">Environmental impact &amp; power approvals</div><div class="proj-stats"><div class="proj-stat"><div class="n">19</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">6</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:#DB2777"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div></div><h3>Internal Memos</h3><div class="desc">Cross-department correspondence</div><div class="proj-stats"><div class="proj-stat"><div class="n">40</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">2</div><div class="l">Pending</div></div></div></div>
+        </div>
+      </div>
+
+      <!-- MEMOS -->
+      <div class="page" id="page-memos">
+        <div class="page-head">
+          <div><h1>Memo Management</h1><div class="sub">AHP — Memo records and surrender status</div></div>
+          <div class="btn-row">
+            <button class="btn btn-outline" onclick="go('upload')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>Upload Memo</button>
+            <button class="btn btn-navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Record</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="filters">
+              <select><option>All Statuses</option><option>Pending</option><option>Partially Surrendered</option><option>Fully Surrendered</option></select>
+              <select><option>All Contractors</option><option>Mwangi &amp; Sons Ltd</option><option>Coastline Builders</option></select>
+              <input type="date" />
+            </div>
+            <button class="btn btn-outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Export</button>
+          </div>
+          <table>
+            <thead><tr><th>Ref No.</th><th>Purpose</th><th>Date</th><th>Amount</th><th>Payee</th><th>Status</th><th>File</th><th></th></tr></thead>
+            <tbody>
+              <tr><td class="ref">MEMO-2026-0341</td><td>Construction materials supply</td><td>12 Jun 2026</td><td>KES 480,000</td><td>Mwangi &amp; Sons Ltd</td><td><span class="status pending">Pending</span></td><td>PDF</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+              <tr><td class="ref">MEMO-2026-0338</td><td>Site labour payment</td><td>9 Jun 2026</td><td>KES 215,500</td><td>Coastline Builders</td><td><span class="status partial">Partially Surrendered</span></td><td>PDF</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+              <tr><td class="ref">MEMO-2026-0330</td><td>Roofing materials</td><td>2 Jun 2026</td><td>KES 1,120,000</td><td>Delta Hardware</td><td><span class="status surrendered">Fully Surrendered</span></td><td>PDF</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+              <tr><td class="ref">MEMO-2026-0298</td><td>Plumbing fixtures</td><td>24 May 2026</td><td>KES 96,000</td><td>Coastline Builders</td><td><span class="status overdue">Overdue</span></td><td>PDF</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+              <tr><td class="ref">MEMO-2026-0291</td><td>Site survey costs</td><td>18 May 2026</td><td>KES 64,200</td><td>GeoSurvey Kenya</td><td><span class="status surrendered">Fully Surrendered</span></td><td>PDF</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+              <tr><td class="ref">MEMO-2026-0280</td><td>Cement &amp; aggregate delivery</td><td>10 May 2026</td><td>KES 340,750</td><td>Mwangi &amp; Sons Ltd</td><td><span class="status pending">Pending</span></td><td>PDF</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+            </tbody>
+          </table>
+          <div class="pager">
+            <div>Showing 1-6 of 42 records</div>
+            <div class="pager-btns"><button class="active">1</button><button>2</button><button>3</button><button>›</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPLOAD -->
+      <div class="page" id="page-upload">
+        <div class="page-head"><div><div class="breadcrumb">Memo Management</div><h1>Upload Memo</h1></div></div>
+        <div class="upload-zone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+          <h3>Drag and drop a PDF here</h3>
+          <p>or click to browse — max 15MB per file</p>
+        </div>
+        <div class="panel">
+          <div class="form-grid">
+            <div class="form-field"><label>Reference Number</label><input placeholder="e.g. MEMO-2026-0342" /></div>
+            <div class="form-field"><label>Project</label><select><option>AHP</option><option>Institutions</option><option>Markets</option><option>Office</option><option>EIA &amp; Power Connection</option></select></div>
+            <div class="form-field full"><label>Purpose</label><input placeholder="Brief description of the memo" /></div>
+            <div class="form-field"><label>Date</label><input type="date" /></div>
+            <div class="form-field"><label>Amount (KES)</label><input placeholder="0.00" /></div>
+            <div class="form-field"><label>Payee</label><input placeholder="Contractor / supplier name" /></div>
+            <div class="form-field"><label>Status</label><select><option>Pending</option><option>Partially Surrendered</option><option>Fully Surrendered</option></select></div>
+            <div class="form-field full"><label>Additional Notes</label><textarea rows="3" placeholder="Optional remarks..."></textarea></div>
+          </div>
+          <div class="btn-row" style="margin-top:20px">
+            <button class="btn btn-navy">Submit Record</button>
+            <button class="btn btn-outline" onclick="go('memos')">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILE LIBRARY -->
+      <div class="page" id="page-files">
+        <div class="page-head"><div><h1>File Library</h1><div class="sub">All supporting documents, organised by category</div></div><button class="btn btn-navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Upload File</button></div>
+        <div class="folder-grid">
+          <div class="folder-card"><div class="folder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div><div><div class="fname">AHP</div><div class="fcount">42 files</div></div></div>
+          <div class="folder-card"><div class="folder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div><div><div class="fname">Institutions</div><div class="fcount">58 files</div></div></div>
+          <div class="folder-card"><div class="folder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div><div><div class="fname">Markets</div><div class="fcount">31 files</div></div></div>
+          <div class="folder-card"><div class="folder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div><div><div class="fname">Office</div><div class="fcount">24 files</div></div></div>
+        </div>
+        <div class="panel-head"><h3>Recently Uploaded</h3></div>
+        <div class="file-grid">
+          <div class="file-card"><div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/></svg></div></div><div class="fn">MEMO-2026-0341.pdf</div><div class="fm">480 KB · 14 min ago</div><div class="file-actions"><button>Preview</button><button>Download</button></div></div>
+          <div class="file-card"><div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/></svg></div></div><div class="fn">Site-Survey-Report.pdf</div><div class="fm">2.1 MB · 1 hr ago</div><div class="file-actions"><button>Preview</button><button>Download</button></div></div>
+          <div class="file-card"><div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/></svg></div></div><div class="fn">Tender-0091-Award.pdf</div><div class="fm">915 KB · 3 hrs ago</div><div class="file-actions"><button>Preview</button><button>Download</button></div></div>
+          <div class="file-card"><div class="file-top"><div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/></svg></div></div><div class="fn">EIA-PowerConn-Phase3.pdf</div><div class="fm">3.4 MB · Yesterday</div><div class="file-actions"><button>Preview</button><button>Download</button></div></div>
+        </div>
+      </div>
+
+      <!-- ASSETS -->
+      <div class="page" id="page-assets">
+        <div class="page-head"><div><h1>Assets Tracker</h1><div class="sub">Equipment and asset register</div></div><button class="btn btn-navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Asset</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Photo</th><th>Serial No.</th><th>Item</th><th>Category</th><th>Location</th><th>Qty</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><div class="asset-photo"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div></td><td class="ref">SN-00231</td><td>Toyota Hilux KDG 442B</td><td>Vehicle</td><td>Office HQ</td><td>1</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+              <tr><td><div class="asset-photo"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div></td><td class="ref">SN-00198</td><td>HP LaserJet Printer</td><td>Electronics</td><td>Records Office</td><td>3</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+              <tr><td><div class="asset-photo"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div></td><td class="ref">SN-00177</td><td>Steel Filing Cabinets</td><td>Furniture</td><td>Records Office</td><td>8</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+              <tr><td><div class="asset-photo"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div></td><td class="ref">SN-00142</td><td>Survey GPS Unit</td><td>Equipment</td><td>Field Store</td><td>2</td><td class="row-actions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REFERENCES -->
+      <div class="page" id="page-references">
+        <div class="page-head"><div><h1>Reference Tracker</h1><div class="sub">Latest reference numbers by project and contractor</div></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Project</th><th>Contractor</th><th>County</th><th>Tender No.</th><th>Latest Reference</th><th>Updated</th></tr></thead>
+            <tbody>
+              <tr><td>Kibera Market Phase II</td><td>Coastline Builders</td><td>Nairobi</td><td>TND-0091</td><td class="ref">CHF-2291</td><td>2 days ago</td></tr>
+              <tr><td>Mwiki Primary Renovation</td><td>Mwangi &amp; Sons Ltd</td><td>Nairobi</td><td>TND-0087</td><td class="ref">CHF-2284</td><td>5 days ago</td></tr>
+              <tr><td>Power Connection Phase 3</td><td>KPLC Contractors</td><td>Kiambu</td><td>TND-0079</td><td class="ref">CHF-2271</td><td>1 week ago</td></tr>
+              <tr><td>AHP Block C</td><td>Delta Hardware</td><td>Nairobi</td><td>TND-0072</td><td class="ref">CHF-2255</td><td>2 weeks ago</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page" id="page-reports">
+        <div class="page-head"><div><h1>Reports</h1><div class="sub">Performance and spend summaries</div></div><button class="btn btn-navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Export PDF</button></div>
+        <div class="grid-3">
+          <div class="panel"><div class="panel-head"><h3>Spending by County</h3></div><div class="bars"><div class="bar-col"><div class="bar alt" style="height:100px"></div><div class="bmonth">Nrb</div></div><div class="bar-col"><div class="bar alt" style="height:70px"></div><div class="bmonth">Kbu</div></div><div class="bar-col"><div class="bar alt" style="height:48px"></div><div class="bmonth">Mch</div></div><div class="bar-col"><div class="bar alt" style="height:84px"></div><div class="bmonth">Ktl</div></div></div></div>
+          <div class="panel"><div class="panel-head"><h3>Pending vs Surrendered</h3></div><div class="donut-wrap" style="flex-direction:column; align-items:flex-start; gap:14px;"><div class="donut" style="width:96px; height:96px; background:conic-gradient(var(--emerald) 0% 72%, var(--amber) 72% 100%);"></div><div class="legend"><div class="legend-item"><span class="legend-dot" style="background:var(--emerald)"></span>Surrendered — 72%</div><div class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>Pending — 28%</div></div></div></div>
+          <div class="panel"><div class="panel-head"><h3>Department Performance</h3></div><div class="activity-list"><div class="activity-item"><div><div class="act-text"><b>AHP</b> — 82% on-time surrender rate</div></div></div><div class="activity-item"><div><div class="act-text"><b>Markets</b> — 91% on-time surrender rate</div></div></div><div class="activity-item"><div><div class="act-text"><b>Institutions</b> — 68% on-time surrender rate</div></div></div></div></div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="page" id="page-notifications">
+        <div class="page-head"><div><h1>Notifications</h1></div></div>
+        <div class="placeholder-page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg><h2>Notification centre</h2><p>Email and in-app alerts for pending memos and deadlines will appear here.</p></div>
+      </div>
+
+      <!-- USERS -->
+      <div class="page" id="page-users">
+        <div class="page-head"><div><h1>Users</h1></div><button class="btn btn-navy">Add User</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Nickson</td><td>Administrator</td><td>nickson@portal.go.ke</td><td><span class="status surrendered">Active</span></td></tr>
+              <tr><td>James Mwangi</td><td>Records Officer</td><td>james@portal.go.ke</td><td><span class="status surrendered">Active</span></td></tr>
+              <tr><td>Sarah Achieng</td><td>Manager</td><td>sarah@portal.go.ke</td><td><span class="status surrendered">Active</span></td></tr>
+              <tr><td>Brian Otieno</td><td>Viewer</td><td>brian@portal.go.ke</td><td><span class="status pending">Invited</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="page-head"><div><h1>Settings</h1></div></div>
+        <div class="placeholder-page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82"/></svg><h2>System settings</h2><p>Backup schedule, roles &amp; permissions, and audit log configuration will live here.</p></div>
+      </div>
+
+      <!-- ACCESS DENIED -->
+      <div class="page" id="page-denied">
+        <div class="denied-wrap">
+          <div class="denied-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+          </div>
+          <h2>Access Restricted</h2>
+          <p>The <b id="denied-page-name"></b> section is not available for your role.</p>
+          <p class="denied-role-line">You are signed in as: <span id="denied-role"></span></p>
+          <button class="btn btn-navy" style="margin-top:24px" onclick="go('dashboard')">Back to Dashboard</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
