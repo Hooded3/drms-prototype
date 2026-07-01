@@ -57,7 +57,20 @@ function logout() {
   document.querySelector('.navitem[data-page="dashboard"]').classList.add('active');
 }
 
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.querySelector('.sidebar-overlay').classList.remove('active');
+}
+
 function go(pageId, el) {
+  closeSidebar(); // always close on mobile nav
   // Check access
   if (currentUser) {
     const allowed = ACCESS[currentUser.role];
