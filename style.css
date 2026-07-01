@@ -372,6 +372,20 @@ tbody tr:last-child td{border-bottom:none;}
 .navgroup::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);}
 
 /* ===== RESPONSIVE ===== */
+/* ===== TOPBAR LOGOUT ===== */
+.topbar-logout{
+  display:flex; align-items:center; justify-content:center;
+  width:36px; height:36px;
+  border-radius:9px;
+  border:1.5px solid #FECACA;
+  background:#FEF2F2;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:background .15s;
+}
+.topbar-logout svg{width:16px; height:16px; color:var(--red);}
+.topbar-logout:hover{background:#FEE2E2;}
+
 /* ===== HAMBURGER ===== */
 .hamburger{
   display:none;
