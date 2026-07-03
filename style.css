@@ -534,3 +534,395 @@ tbody tr:last-child td{border-bottom:none;}
 .topbar-logout svg{width:16px;height:16px;color:var(--muted);}
 .topbar-logout:hover{border-color:var(--red);}
 .topbar-logout:hover svg{color:var(--red);}
+
+/* ===== UNIFORM SUB-PROJECT TABLE ===== */
+.project-sub-list table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+
+.project-sub-list thead th {
+  position: sticky;
+  top: 0;
+  background: #F1F5F9;
+  color: #334155;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 16px;
+  border-bottom: 2px solid #E2E8F0;
+  text-align: left;
+  z-index: 5;
+}
+
+.project-sub-list tbody tr {
+  transition: background 0.12s ease;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.project-sub-list tbody tr:hover {
+  background: #F8FAFC;
+}
+
+.project-sub-list tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #F1F5F9;
+  vertical-align: middle;
+  color: #1E293B;
+}
+
+.project-sub-list tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Row index styling */
+.project-sub-list .row-index {
+  color: #94A3B8;
+  font-weight: 500;
+  font-size: 12px;
+  width: 40px;
+  text-align: center;
+}
+
+/* Project name styling */
+.project-sub-list .proj-name {
+  font-weight: 600;
+  color: #0F3D91;
+}
+
+.project-sub-list .proj-name a {
+  color: #0F3D91;
+  text-decoration: none;
+}
+
+/* Contractor styling */
+.project-sub-list .contractor {
+  color: #475569;
+}
+
+/* County styling */
+.project-sub-list .county {
+  color: #475569;
+}
+
+/* Tender number styling */
+.project-sub-list .tender {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #1E293B;
+}
+
+/* Stats alignment (Memo count, Pending count) */
+.project-sub-list .stat-cell {
+  text-align: center;
+  font-weight: 700;
+}
+
+.project-sub-list .stat-cell.memos {
+  color: #0F3D91;
+}
+
+.project-sub-list .stat-cell.pending {
+  color: #F59E0B;
+}
+
+/* Open button styling */
+.project-sub-list .open-btn {
+  padding: 5px 14px;
+  border-radius: 6px;
+  border: 1.5px solid var(--navy);
+  background: #fff;
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.project-sub-list .open-btn:hover {
+  background: var(--navy);
+  color: #fff;
+}
+
+/* Project status badge */
+.project-sub-list .status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.status-badge.active {
+  background: #DCFCE7;
+  color: #15803D;
+}
+
+.status-badge.evaluation {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.status-badge.procurement {
+  background: #DBEAFE;
+  color: #1D4ED8;
+}
+
+.status-badge.advertised {
+  background: #E0E7FF;
+  color: #4338CA;
+}
+
+.status-badge.terminated {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+.status-badge.completed {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+/* Add new row styling */
+.project-sub-list .add-row td {
+  padding: 14px 16px;
+  border: 2px dashed #CBD5E1;
+  border-radius: 8px;
+  background: #F8FAFC;
+  text-align: center;
+  color: #64748B;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.project-sub-list .add-row td:hover {
+  border-color: var(--navy);
+  background: #EFF6FF;
+  color: var(--navy);
+}
+
+/* Mobile responsive for table */
+@media (max-width: 768px) {
+  .project-sub-list table {
+    font-size: 12px;
+  }
+  .project-sub-list thead th,
+  .project-sub-list tbody td {
+    padding: 8px 10px;
+  }
+  .project-sub-list .tender {
+    font-size: 10px;
+  }
+  .project-sub-list .open-btn {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+  .project-sub-list .status-badge {
+    font-size: 9px;
+    padding: 2px 8px;
+  }
+}
+
+/* ===== UNIFORM SUB-PROJECT TABLE ===== */
+.project-sub-list table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+
+.project-sub-list thead th {
+  position: sticky;
+  top: 0;
+  background: #F1F5F9;
+  color: #334155;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 16px;
+  border-bottom: 2px solid #E2E8F0;
+  text-align: left;
+  z-index: 5;
+}
+
+.project-sub-list tbody tr {
+  transition: background 0.12s ease;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.project-sub-list tbody tr:hover {
+  background: #F8FAFC;
+}
+
+.project-sub-list tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #F1F5F9;
+  vertical-align: middle;
+  color: #1E293B;
+}
+
+.project-sub-list tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Row index styling */
+.project-sub-list .row-index {
+  color: #94A3B8;
+  font-weight: 500;
+  font-size: 12px;
+  width: 40px;
+  text-align: center;
+}
+
+/* Project name styling */
+.project-sub-list .proj-name {
+  font-weight: 600;
+  color: #0F3D91;
+}
+
+.project-sub-list .proj-name a {
+  color: #0F3D91;
+  text-decoration: none;
+}
+
+/* Contractor styling */
+.project-sub-list .contractor {
+  color: #475569;
+}
+
+/* County styling */
+.project-sub-list .county {
+  color: #475569;
+}
+
+/* Tender number styling */
+.project-sub-list .tender {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #1E293B;
+}
+
+/* Stats alignment (Memo count, Pending count) */
+.project-sub-list .stat-cell {
+  text-align: center;
+  font-weight: 700;
+}
+
+.project-sub-list .stat-cell.memos {
+  color: #0F3D91;
+}
+
+.project-sub-list .stat-cell.pending {
+  color: #F59E0B;
+}
+
+/* Open button styling */
+.project-sub-list .open-btn {
+  padding: 5px 14px;
+  border-radius: 6px;
+  border: 1.5px solid var(--navy);
+  background: #fff;
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.project-sub-list .open-btn:hover {
+  background: var(--navy);
+  color: #fff;
+}
+
+/* Project status badge */
+.project-sub-list .status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.status-badge.active {
+  background: #DCFCE7;
+  color: #15803D;
+}
+
+.status-badge.evaluation {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.status-badge.procurement {
+  background: #DBEAFE;
+  color: #1D4ED8;
+}
+
+.status-badge.advertised {
+  background: #E0E7FF;
+  color: #4338CA;
+}
+
+.status-badge.terminated {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+.status-badge.completed {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+/* Add new row styling */
+.project-sub-list .add-row td {
+  padding: 14px 16px;
+  border: 2px dashed #CBD5E1;
+  border-radius: 8px;
+  background: #F8FAFC;
+  text-align: center;
+  color: #64748B;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.project-sub-list .add-row td:hover {
+  border-color: var(--navy);
+  background: #EFF6FF;
+  color: var(--navy);
+}
+
+/* Mobile responsive for table */
+@media (max-width: 768px) {
+  .project-sub-list table {
+    font-size: 12px;
+  }
+  .project-sub-list thead th,
+  .project-sub-list tbody td {
+    padding: 8px 10px;
+  }
+  .project-sub-list .tender {
+    font-size: 10px;
+  }
+  .project-sub-list .open-btn {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+  .project-sub-list .status-badge {
+    font-size: 9px;
+    padding: 2px 8px;
+  }
+}

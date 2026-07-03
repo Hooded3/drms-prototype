@@ -103,12 +103,6 @@
         </div>
       </div>
       <div class="topbar-right">
-        <select id="role-switcher" onchange="switchRole(this.value)" style="padding:6px 10px;border-radius:7px;border:1.5px solid var(--line);font-size:12px;font-family:'Inter',sans-serif;background:#fff;">
-          <option value="admin">👤 Admin</option>
-          <option value="officer">👤 Officer</option>
-          <option value="manager">👤 Manager</option>
-          <option value="viewer">👤 Viewer</option>
-        </select>
         <div class="icon-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
           <span class="dot"></span>
@@ -195,9 +189,79 @@
           </button>
         </div>
         <div class="proj-grid" id="project-grid">
-          <div class="proj-card" onclick="openModuleList('AHP','var(--navy)')"><div class="proj-top"><div class="proj-icon" style="background:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div></div><h3>AHP</h3><div class="desc">Affordable Housing Programme — click to view sub-projects &amp; memos</div><div class="proj-stats"><div class="proj-stat"><div class="n" id="ahp-count">3</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">8</div><div class="l">Pending</div></div></div></div>
-          <div class="proj-card" onclick="openModuleList('Institutions','#16A34A')"><div class="proj-top"><div class="proj-icon" style="background:var(--emerald-dark)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 22h16M5 22V11l7-7 7 7v11"/><path d="M9 22v-6h6v6"/></svg></div></div><h3>Institutions</h3><div class="desc">Schools, health centres, public offices</div><div class="proj-stats"><div class="proj-stat"><div class="n">2</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">4</div><div class="l">Pending</div></div></div></div>
-          <div class="proj-card" onclick="openModuleList('Markets','#D97706')"><div class="proj-top"><div class="proj-icon" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9M4 9h16"/></svg></div></div><h3>Markets</h3><div class="desc">Market construction &amp; rehabilitation</div><div class="proj-stats"><div class="proj-stat"><div class="n">2</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">3</div><div class="l">Pending</div></div></div></div>
+          
+          <!-- MODULE 1: AHP -->
+          <div class="proj-card" onclick="openModuleList('AHP','#0F3D91')">
+            <div class="proj-top"><div class="proj-icon" style="background:#0F3D91"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div></div>
+            <h3>AHP</h3>
+            <div class="desc">Affordable Housing Programme</div>
+            <div class="proj-stats"><div class="proj-stat"><div class="n" id="ahp-count">3</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">8</div><div class="l">Pending</div></div></div>
+          </div>
+          
+          <!-- MODULE 2: Institutions -->
+          <div class="proj-card" onclick="openModuleList('Institutions','#16A34A')">
+            <div class="proj-top"><div class="proj-icon" style="background:#16A34A"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 22h16M5 22V11l7-7 7 7v11"/><path d="M9 22v-6h6v6"/></svg></div></div>
+            <h3>Institutions</h3>
+            <div class="desc">Schools, health centres, public offices</div>
+            <div class="proj-stats"><div class="proj-stat"><div class="n">2</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">4</div><div class="l">Pending</div></div></div>
+          </div>
+          
+          <!-- MODULE 3: Markets -->
+          <div class="proj-card" onclick="openModuleList('Markets','#D97706')">
+            <div class="proj-top"><div class="proj-icon" style="background:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9M4 9h16"/></svg></div></div>
+            <h3>Markets</h3>
+            <div class="desc">Market construction &amp; rehabilitation</div>
+            <div class="proj-stats"><div class="proj-stat"><div class="n">2</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">3</div><div class="l">Pending</div></div></div>
+          </div>
+          
+          <!-- MODULE 4: ESP Markets -->
+          <div class="proj-card" onclick="openModuleList('ESP Markets','#0891B2')">
+            <div class="proj-top"><div class="proj-icon" style="background:#0891B2"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h7l-1 8 11-14h-7l1-6z"/></svg></div></div>
+            <h3>ESP Markets</h3>
+            <div class="desc">Economic Stimulus Programme Markets</div>
+            <div class="proj-stats"><div class="proj-stat"><div class="n">2</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">3</div><div class="l">Pending</div></div></div>
+          </div>
+          
+          <!-- MODULE 5: Modern Markets -->
+          <div class="proj-card" onclick="openModuleList('Modern Markets','#7C3AED')">
+            <div class="proj-top"><div class="proj-icon" style="background:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div></div>
+            <h3>Modern Markets</h3>
+            <div class="desc">Modern market construction projects</div>
+            <div class="proj-stats"><div class="proj-stat"><div class="n">2</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">2</div><div class="l">Pending</div></div></div>
+          </div>
+          
+          <!-- MODULE 6: Office -->
+          <div class="proj-card" onclick="openModuleList('Office','#DB2777')">
+            <div class="proj-top"><div class="proj-icon" style="background:#DB2777"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div></div>
+            <h3>Office</h3>
+            <div class="desc">Internal office administration records</div>
+            <div class="proj-stats"><div class="proj-stat"><div class="n">1</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">2</div><div class="l">Pending</div></div></div>
+          </div>
+          
+          <!-- MODULE 7: EIA & Power Connection -->
+          <div class="proj-card" onclick="openModuleList('EIA & Power Connection','#0F3D91')">
+            <div class="proj-top"><div class="proj-icon" style="background:#0F3D91"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h7l-1 8 11-14h-7l1-6z"/></svg></div></div>
+            <h3>EIA &amp; Power Connection</h3>
+            <div class="desc">Environmental impact &amp; power approvals</div>
+            <div class="proj-stats"><div class="proj-stat"><div class="n">1</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">3</div><div class="l">Pending</div></div></div>
+          </div>
+          
+          <!-- MODULE 8: Internal Memo -->
+          <div class="proj-card" onclick="openModuleList('Internal Memo','#16A34A')">
+            <div class="proj-top"><div class="proj-icon" style="background:#16A34A"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div></div>
+            <h3>Internal Memo</h3>
+            <div class="desc">Cross-department correspondence</div>
+            <div class="proj-stats"><div class="proj-stat"><div class="n">1</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">1</div><div class="l">Pending</div></div></div>
+          </div>
+          
+          <!-- MODULE 9: Assets -->
+          <div class="proj-card" onclick="openModuleList('Assets','#D97706')">
+            <div class="proj-top"><div class="proj-icon" style="background:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div></div>
+            <h3>Assets</h3>
+            <div class="desc">Equipment and asset register</div>
+            <div class="proj-stats"><div class="proj-stat"><div class="n">1</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">2</div><div class="l">Pending</div></div></div>
+          </div>
+
         </div>
       </div>
 
@@ -316,8 +380,8 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
             </div>
             <div>
-              <div class="pdh-name" id="detail-name">Diani Whitehouse AHP</div>
-              <div class="pdh-meta" id="detail-meta">Contractor: Sihaam Construction Ltd · T.NO: 218 · Msambweni</div>
+              <div class="pdh-name" id="detail-name">Project Sub-Projects</div>
+              <div class="pdh-meta" id="detail-meta">Select a sub-project to view its memos</div>
             </div>
           </div>
           <div class="pdh-stats">
@@ -326,22 +390,17 @@
             <div class="pdh-stat"><div class="n" style="color:var(--emerald)" id="detail-surrendered">0</div><div class="l">Surrendered</div></div>
           </div>
         </div>
-        <div class="table-toolbar" style="background:var(--card);border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--line-soft);border-bottom:none;">
-          <div class="filters">
-            <select onchange="filterMemos(this.value)">
-              <option value="all">All Statuses</option>
-              <option value="pending">Pending</option>
-              <option value="paid">Paid</option>
-              <option value="partially_surrendered">Partially Surrendered</option>
-              <option value="not_surrendered">Not Surrendered</option>
-            </select>
-            <input type="text" placeholder="Search memos..." oninput="searchMemos(this.value)" style="border:1.5px solid var(--line);border-radius:7px;padding:7px 11px;font-size:12.5px;font-family:'Inter',sans-serif;" />
+        <div class="table-wrap">
+          <div class="table-toolbar" style="border-bottom:1px solid var(--line-soft);">
+            <div class="filters">
+              <input type="text" placeholder="Search sub-projects..." oninput="searchSubProjects(this.value)" style="border:1.5px solid var(--line);border-radius:7px;padding:7px 11px;font-size:12.5px;font-family:'Inter',sans-serif;" />
+            </div>
+            <button class="btn btn-navy" id="btn-add-memo-detail" onclick="openAddMemoModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Sub-Project
+            </button>
           </div>
-          <button class="btn btn-navy" id="btn-add-memo-detail" onclick="openAddMemoModal()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Memo
-          </button>
+          <div id="project-sub-list" class="project-sub-list"></div>
         </div>
-        <div id="memo-list" class="memo-list" style="background:var(--card);border:1px solid var(--line-soft);border-radius:0 0 var(--radius) var(--radius);padding:14px 16px;min-height:160px;"></div>
       </div>
 
     </div>
@@ -396,7 +455,7 @@
     <div class="modal-body">
       <div class="add-proj-form">
         <div class="form-field"><label>Project Name</label><input type="text" id="np-name" placeholder="e.g. Tezo AHP Phase 2" /></div>
-        <div class="form-field"><label>Module</label><select id="np-module"><option>AHP</option><option>Institutions</option><option>Markets</option></select></div>
+        <div class="form-field"><label>Module</label><select id="np-module"><option>AHP</option><option>Institutions</option><option>Markets</option><option>ESP Markets</option><option>Modern Markets</option><option>Office</option><option>EIA &amp; Power Connection</option><option>Internal Memo</option><option>Assets</option></select></div>
         <div class="form-field"><label>Contractor</label><input type="text" id="np-contractor" placeholder="e.g. M/s Broad Contractors Ltd" /></div>
         <div class="form-field"><label>County / Constituency</label><input type="text" id="np-county" placeholder="e.g. Kilifi North" /></div>
         <div class="form-field"><label>Tender Number</label><input type="text" id="np-tender" placeholder="e.g. 393" /></div>

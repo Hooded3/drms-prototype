@@ -3,14 +3,14 @@ let currentUser  = { name:'Nickson', role:'admin', email:'nickson@portal.go.ke' 
 let currentMemoId = null;
 let currentProjectId = null;
 let paymentStatus = 'pending';
-let importLocked = false; // Simulates one-time import lock
+let importLocked = false;
+let currentModuleName = '';
 let notices = [
   { id:'n1', title:'Important: New Surrender Policy Effective Immediately', content:'All memos must be surrendered within 14 days of payment. Please ensure all documents are uploaded to the system before the deadline.', date:'2 Jul 2026', pinned:true, author:'Admin' },
   { id:'n2', title:'System Maintenance Scheduled for Friday', content:'The DRMS will be offline for scheduled maintenance on Friday, 10th July 2026 from 18:00 to 20:00 EAT. Please save all work before then.', date:'30 Jun 2026', pinned:false, author:'IT Department' },
   { id:'n3', title:'Reminder: Monthly Reports Due', content:'All project managers are reminded to submit their monthly expenditure reports by the 5th of every month. Late submissions will be flagged.', date:'28 Jun 2026', pinned:false, author:'Records Office' },
 ];
 
-// Document checklist items
 const DOC_TYPES = [
   { id:'memo',       label:'Memo PDF',            hint:'Memo/imprest PDF' },
   { id:'rfi',        label:'RFI PDF',              hint:'Request for Invoice' },
@@ -21,23 +21,42 @@ const DOC_TYPES = [
   { id:'other',      label:'Other Docs',           hint:'Any additional documents' },
 ];
 
-// Per-doc state: 'none' | 'uploaded' | 'na'
 let docState = {};
 
 // ── Sample project data ────────────────────────────────────────────────────────
 const PROJECTS = {
   ahp: [
-    { id:'p1', name:'Diani Whitehouse AHP', contractor:'Sihaam Construction Ltd', tender:'218', county:'Msambweni', color:'#0F3D91' },
-    { id:'p2', name:'Matuga AHP',           contractor:'Blueswift Contractors',   tender:'234', county:'Matuga',    color:'#0F3D91' },
-    { id:'p3', name:'Mokowe AHP',           contractor:'Parklane Construction',   tender:'217', county:'Lamu West', color:'#0F3D91' },
+    { id:'p1', name:'Diani Whitehouse AHP', contractor:'Sihaam Construction Ltd', tender:'218', county:'Msambweni', color:'#0F3D91', status:'active' },
+    { id:'p2', name:'Matuga AHP',           contractor:'Blueswift Contractors',   tender:'234', county:'Matuga',    color:'#0F3D91', status:'active' },
+    { id:'p3', name:'Mokowe AHP',           contractor:'Parklane Construction',   tender:'217', county:'Lamu West', color:'#0F3D91', status:'active' },
   ],
   institutions: [
-    { id:'p4', name:'Taita Taveta University', contractor:'Azeco Investment Ltd',  tender:'537', county:'Mwatate',  color:'#16A34A' },
-    { id:'p5', name:'Voi KMTC',               contractor:'Patience Services',      tender:'539', county:'Voi',      color:'#16A34A' },
+    { id:'p4', name:'Taita Taveta University', contractor:'Azeco Investment Ltd',  tender:'537', county:'Mwatate',  color:'#16A34A', status:'active' },
+    { id:'p5', name:'Voi KMTC',               contractor:'Patience Services',      tender:'539', county:'Voi',      color:'#16A34A', status:'active' },
   ],
   markets: [
-    { id:'p6', name:'Diani Modern Market', contractor:'Biomax Africa Ltd',         tender:'184', county:'Msambweni', color:'#D97706' },
-    { id:'p7', name:'Voi Modern Market',   contractor:'Buuti Enterprises Ltd',     tender:'628', county:'Voi',       color:'#D97706' },
+    { id:'p6', name:'Diani Modern Market', contractor:'Biomax Africa Ltd',         tender:'184', county:'Msambweni', color:'#D97706', status:'active' },
+    { id:'p7', name:'Voi Modern Market',   contractor:'Buuti Enterprises Ltd',     tender:'628', county:'Voi',       color:'#D97706', status:'active' },
+  ],
+  esp: [
+    { id:'p8', name:'Maungu ESP Market',      contractor:'Snavem Enterprises Ltd',   tender:'287', county:'Voi',       color:'#0891B2', status:'active' },
+    { id:'p9', name:'Mnarani ESP Market',     contractor:'Yatico Suppliers',         tender:'358', county:'Kilifi N',  color:'#0891B2', status:'active' },
+  ],
+  modern_markets: [
+    { id:'p10', name:'Voi Township Modern Market', contractor:'Buuti Enterprises Ltd', tender:'628', county:'Voi', color:'#7C3AED', status:'active' },
+    { id:'p11', name:'Makupa MUD',                contractor:'Whitespan Enterprises',  tender:'278', county:'Mvita', color:'#7C3AED', status:'active' },
+  ],
+  office: [
+    { id:'p12', name:'Office Records (VOL 1 & 2)', contractor:'Internal', tender:'—', county:'HQ', color:'#DB2777', status:'active' },
+  ],
+  eia: [
+    { id:'p13', name:'EIA & Power Connection', contractor:'Various', tender:'—', county:'Coast Region', color:'#0F3D91', status:'active' },
+  ],
+  internal_memo: [
+    { id:'p14', name:'General Internal Memos', contractor:'Internal', tender:'—', county:'HQ', color:'#16A34A', status:'active' },
+  ],
+  assets: [
+    { id:'p15', name:'County Asset Register', contractor:'Internal', tender:'—', county:'HQ', color:'#D97706', status:'active' },
   ],
 };
 
@@ -73,9 +92,9 @@ const MEMOS_DB = {
   p7: [
     { id:'m16', ref:'SDHUD/RL/CST/AHP/628/VOL.1(04)',       purpose:'Facilitation — site meeting 01',                       date:'4 Mar 2026',  amount:'197,500',   payee:'Siti Zuma',                 payStatus:'paid', s2status:'not_surrendered', docs:{} },
   ],
+  p8: [], p9: [], p10: [], p11: [], p12: [], p13: [], p14: [], p15: []
 };
 
-// Extra projects added at runtime
 let extraProjects = [];
 
 // ── Login ─────────────────────────────────────────────────────────────────────
@@ -113,22 +132,13 @@ function updateUserChip() {
   document.getElementById('sb-role').textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
 }
 
-// ── Role Switching ─────────────────────────────────────────────────────────────
-function switchRole(role) {
-  currentUser.role = role;
-  updateUserChip();
-  applyRolePermissions();
-}
-
+// ── Role Permissions ──────────────────────────────────────────────────────────
 function applyRolePermissions() {
   const isAdmin = currentUser.role === 'admin';
   const isOfficer = currentUser.role === 'officer' || isAdmin;
   const isManager = currentUser.role === 'manager' || isAdmin;
 
-  // Nav items
   document.getElementById('nav-import').style.display = isAdmin ? 'flex' : 'none';
-  
-  // Buttons
   document.getElementById('btn-add-project').style.display = isAdmin ? 'flex' : 'none';
   document.getElementById('btn-add-memo').style.display = isOfficer ? 'flex' : 'none';
   document.getElementById('btn-add-memo-detail').style.display = isOfficer ? 'flex' : 'none';
@@ -152,7 +162,6 @@ function go(pageId, el) {
   closeSidebar();
 }
 
-// ── Sidebar (mobile) ─────────────────────────────────────────────────────────
 function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
   document.querySelector('.sidebar-overlay').classList.toggle('visible');
@@ -162,22 +171,18 @@ function closeSidebar() {
   document.querySelector('.sidebar-overlay').classList.remove('visible');
 }
 
-// ── Modals ────────────────────────────────────────────────────────────────────
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
 
 // ── Dashboard ──────────────────────────────────────────────────────────────────
 function updateDashboard() {
-  // Calculate real stats from data
   let totalProjects = 0;
   let pendingMemos = 0;
   let surrendered = 0;
-  let totalAssets = 468; // Static for demo
+  let totalAssets = 468;
 
-  Object.keys(PROJECTS).forEach(key => {
-    totalProjects += PROJECTS[key].length;
-  });
+  Object.keys(PROJECTS).forEach(key => { totalProjects += PROJECTS[key].length; });
   totalProjects += extraProjects.length;
 
   Object.values(MEMOS_DB).forEach(memos => {
@@ -192,73 +197,139 @@ function updateDashboard() {
   document.getElementById('kpi-surrendered').textContent = surrendered;
   document.getElementById('kpi-total-assets').textContent = totalAssets;
 
-  // Update pie chart percentages
-  const total = pendingMemos + surrendered + 20; // +20 simulated partial/overdue
+  const total = pendingMemos + surrendered + 20;
   const pctSurrendered = Math.round((surrendered / total) * 100);
   const pctPending = Math.round((pendingMemos / total) * 100);
-  const pctPartial = Math.round(((total - surrendered - pendingMemos) / total) * 50);
   document.getElementById('legend-surrendered').textContent = pctSurrendered + '%';
   document.getElementById('legend-pending').textContent = pctPending + '%';
   document.getElementById('legend-partial').textContent = Math.max(10, 100 - pctSurrendered - pctPending) + '%';
   document.getElementById('legend-overdue').textContent = Math.max(5, 100 - pctSurrendered - pctPending - 20) + '%';
 
-  // Update project cards on projects page
   const ahpCount = document.getElementById('ahp-count');
   if (ahpCount) ahpCount.textContent = PROJECTS.ahp.length + extraProjects.filter(p=>p.module==='AHP').length;
 }
 
-// ── Project list view ──────────────────────────────────────────────────────────
+// ── Projects Page ──────────────────────────────────────────────────────────────
 function openModuleList(moduleName, color) {
-  const keyMap = { AHP:'ahp', Institutions:'institutions', Markets:'markets' };
+  currentModuleName = moduleName;
+  const keyMap = { 
+    AHP:'ahp', Institutions:'institutions', Markets:'markets', 
+    'ESP Markets':'esp', 'Modern Markets':'modern_markets',
+    'Office':'office', 'EIA & Power Connection':'eia',
+    'Internal Memo':'internal_memo', 'Assets':'assets'
+  };
   const key = keyMap[moduleName];
   const projs = (PROJECTS[key] || []).concat(extraProjects.filter(p => p.module === moduleName));
 
-  document.getElementById('detail-name').textContent = moduleName + ' — Select a Sub-Project';
+  document.getElementById('detail-name').textContent = moduleName + ' — Sub-Projects';
   document.getElementById('detail-meta').textContent = projs.length + ' sub-projects registered';
   document.getElementById('detail-icon').style.background = color;
   document.getElementById('detail-total').textContent = projs.length;
   document.getElementById('detail-pending').textContent = '—';
   document.getElementById('detail-surrendered').textContent = '—';
+  document.getElementById('add-memo-project-name').textContent = 'Project: ' + moduleName;
 
-  const list = document.getElementById('memo-list');
-  list.innerHTML = '';
+  renderSubProjectTable(projs, color);
+  go('project-detail');
+}
 
-  projs.forEach(p => {
+function renderSubProjectTable(projs, color) {
+  const container = document.getElementById('project-sub-list');
+  container.innerHTML = '';
+
+  if (!projs.length) {
+    container.innerHTML = '<div style="padding:40px;text-align:center;color:#94A3B8;">No sub-projects found. Click "Add Sub-Project" to create one.</div>';
+    return;
+  }
+
+  const table = document.createElement('table');
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th style="width:44px;text-align:center;">#</th>
+        <th style="min-width:200px;">Project Name</th>
+        <th style="min-width:180px;">Contractor</th>
+        <th style="min-width:120px;">County</th>
+        <th style="min-width:100px;">Tender No.</th>
+        <th style="min-width:80px;text-align:center;">Memos</th>
+        <th style="min-width:80px;text-align:center;">Pending</th>
+        <th style="min-width:100px;text-align:center;">Status</th>
+        <th style="width:80px;text-align:center;"></th>
+      </tr>
+    </thead>
+    <tbody id="sub-proj-tbody"></tbody>
+  `;
+  container.appendChild(table);
+
+  const tbody = document.getElementById('sub-proj-tbody');
+  projs.forEach((p, i) => {
     const memos = MEMOS_DB[p.id] || [];
     const pending = memos.filter(m => m.payStatus === 'pending').length;
-    const surr = memos.filter(m => m.s2status === 'partially_surrendered').length;
-
-    const card = document.createElement('div');
-    card.style.cssText = 'background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:8px;';
-    card.onmouseover = () => card.style.borderColor = color;
-    card.onmouseout  = () => card.style.borderColor = '#E2E8F0';
-    card.innerHTML = `
-      <div>
-        <div style="font-size:14px;font-weight:600;margin-bottom:3px;">${p.name}</div>
-        <div style="font-size:11.5px;color:#64748B;">${p.contractor} · T.NO ${p.tender} · ${p.county}</div>
-      </div>
-      <div style="display:flex;gap:18px;align-items:center;">
-        <div style="text-align:center"><div style="font-size:16px;font-weight:700;font-family:'Poppins',sans-serif;">${memos.length}</div><div style="font-size:10px;color:#64748B;">Memos</div></div>
-        <div style="text-align:center"><div style="font-size:16px;font-weight:700;font-family:'Poppins',sans-serif;color:#F59E0B;">${pending}</div><div style="font-size:10px;color:#64748B;">Pending</div></div>
-        <button style="padding:7px 14px;border-radius:7px;border:1.5px solid ${color};background:#fff;color:${color};font-size:12px;font-weight:600;cursor:pointer;">Open →</button>
-      </div>`;
-    card.querySelector('button').onclick = () => loadProjectDetail(p.id, p.name, p.contractor, p.tender, p.county, color, MEMOS_DB[p.id] || []);
-    list.appendChild(card);
+    const statusClass = p.status || 'active';
+    
+    const row = document.createElement('tr');
+    row.style.cursor = 'pointer';
+    row.onmouseover = () => row.style.background = '#F8FAFC';
+    row.onmouseout  = () => row.style.background = '';
+    row.onclick = () => loadProjectDetail(p.id, p.name, p.contractor, p.tender, p.county, color, MEMOS_DB[p.id] || []);
+    
+    row.innerHTML = `
+      <td class="row-index">${i+1}</td>
+      <td class="proj-name">${p.name}</td>
+      <td class="contractor">${p.contractor}</td>
+      <td class="county">${p.county}</td>
+      <td class="tender">${p.tender}</td>
+      <td class="stat-cell memos">${memos.length}</td>
+      <td class="stat-cell pending">${pending}</td>
+      <td style="text-align:center;">
+        <span class="status-badge ${statusClass}">${statusClass.replace('_', ' ')}</span>
+      </td>
+      <td style="text-align:center;">
+        <button class="open-btn">Open</button>
+      </td>
+    `;
+    tbody.appendChild(row);
   });
 
-  // Add new project shortcut inside module
-  const addBtn = document.createElement('div');
-  addBtn.style.cssText = 'border:2px dashed #C9D5EC;border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;color:#64748B;font-size:13px;font-weight:500;';
-  addBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add new ${moduleName} sub-project`;
-  addBtn.onclick = () => { document.getElementById('np-module').value = moduleName; openModal('add-project-modal'); };
-  list.appendChild(addBtn);
+  const addRow = document.createElement('tr');
+  addRow.className = 'add-row';
+  addRow.style.cursor = 'pointer';
+  addRow.onclick = () => { document.getElementById('np-module').value = currentModuleName; openModal('add-project-modal'); };
+  addRow.innerHTML = `
+    <td colspan="9">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M12 5v14M5 12h14"/></svg>
+      Add new ${currentModuleName} sub-project
+    </td>
+  `;
+  tbody.appendChild(addRow);
+}
 
-  go('project-detail');
+function searchSubProjects(val) {
+  const keyMap = { 
+    AHP:'ahp', Institutions:'institutions', Markets:'markets', 
+    'ESP Markets':'esp', 'Modern Markets':'modern_markets',
+    'Office':'office', 'EIA & Power Connection':'eia',
+    'Internal Memo':'internal_memo', 'Assets':'assets'
+  };
+  const key = keyMap[currentModuleName];
+  let projs = (PROJECTS[key] || []).concat(extraProjects.filter(p => p.module === currentModuleName));
+  
+  if (val) {
+    const search = val.toLowerCase();
+    projs = projs.filter(p => 
+      p.name.toLowerCase().includes(search) ||
+      p.contractor.toLowerCase().includes(search) ||
+      p.county.toLowerCase().includes(search) ||
+      p.tender.toLowerCase().includes(search)
+    );
+  }
+  
+  const color = projs.length ? projs[0].color : '#0F3D91';
+  renderSubProjectTable(projs, color);
 }
 
 function loadProjectDetail(projId, name, contractor, tender, county, color, memos) {
   currentProjectId = projId;
-
   document.getElementById('detail-name').textContent = name;
   document.getElementById('detail-meta').textContent = `Contractor: ${contractor} · T.NO: ${tender} · ${county}`;
   document.getElementById('detail-icon').style.background = color;
@@ -270,17 +341,37 @@ function loadProjectDetail(projId, name, contractor, tender, county, color, memo
   document.getElementById('detail-total').textContent     = memoData.length;
   document.getElementById('detail-pending').textContent   = pending;
   document.getElementById('detail-surrendered').textContent = surr;
-
   document.getElementById('add-memo-project-name').textContent = 'Project: ' + name;
 
+  // Replace table with clean memo table
+  const container = document.getElementById('project-sub-list');
+  container.innerHTML = `
+    <div class="table-toolbar" style="background:var(--card);border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--line-soft);border-bottom:none;">
+      <div class="filters">
+        <select onchange="filterMemos(this.value)">
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="paid">Paid</option>
+          <option value="partially_surrendered">Partially Surrendered</option>
+          <option value="not_surrendered">Not Surrendered</option>
+        </select>
+        <input type="text" placeholder="Search memos..." oninput="searchMemos(this.value)" style="border:1.5px solid var(--line);border-radius:7px;padding:7px 11px;font-size:12.5px;font-family:'Inter',sans-serif;" />
+      </div>
+      <button class="btn btn-navy" onclick="openAddMemoModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Memo
+      </button>
+    </div>
+    <div id="memo-list" class="memo-list-table"></div>
+  `;
+  
   renderMemoList(memoData);
-  go('project-detail');
 }
 
-// ── Render memo list ──────────────────────────────────────────────────────────
+// ── Render memo list as clean table ────────────────────────────────────────────
 function renderMemoList(memos, filter='all', search='') {
-  const list = document.getElementById('memo-list');
-  list.innerHTML = '';
+  const container = document.getElementById('memo-list');
+  if (!container) return;
+  container.innerHTML = '';
 
   let filtered = memos;
   if (filter !== 'all') filtered = filtered.filter(m => {
@@ -297,10 +388,34 @@ function renderMemoList(memos, filter='all', search='') {
   );
 
   if (!filtered.length) {
-    list.innerHTML = '<div style="text-align:center;padding:40px;color:#94A3B8;font-size:13px;">No memos found</div>';
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:#94A3B8;font-size:13px;">No memos found</div>';
     return;
   }
 
+  const table = document.createElement('table');
+  table.style.width = '100%';
+  table.style.borderCollapse = 'collapse';
+  table.style.fontSize = '13px';
+  
+  // Headers
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th style="padding:10px 14px;text-align:left;background:#F1F5F9;color:#334155;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #E2E8F0;">Ref No.</th>
+        <th style="padding:10px 14px;text-align:left;background:#F1F5F9;color:#334155;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #E2E8F0;">Purpose</th>
+        <th style="padding:10px 14px;text-align:left;background:#F1F5F9;color:#334155;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #E2E8F0;">Date</th>
+        <th style="padding:10px 14px;text-align:left;background:#F1F5F9;color:#334155;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #E2E8F0;">Amount</th>
+        <th style="padding:10px 14px;text-align:left;background:#F1F5F9;color:#334155;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #E2E8F0;">Payee</th>
+        <th style="padding:10px 14px;text-align:center;background:#F1F5F9;color:#334155;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #E2E8F0;">Stage 1</th>
+        <th style="padding:10px 14px;text-align:center;background:#F1F5F9;color:#334155;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #E2E8F0;">Stage 2</th>
+        <th style="padding:10px 14px;text-align:center;background:#F1F5F9;color:#334155;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #E2E8F0;width:80px;"></th>
+      </tr>
+    </thead>
+    <tbody id="memo-tbody"></tbody>
+  `;
+  container.appendChild(table);
+
+  const tbody = document.getElementById('memo-tbody');
   filtered.forEach(m => {
     const s2 = m.s2status;
     let stage1Badge = m.payStatus === 'paid'
@@ -316,34 +431,36 @@ function renderMemoList(memos, filter='all', search='') {
       }
     }
 
-    const row = document.createElement('div');
-    row.className = 'memo-item';
+    const row = document.createElement('tr');
+    row.style.cursor = 'pointer';
+    row.onmouseover = () => row.style.background = '#F8FAFC';
+    row.onmouseout  = () => row.style.background = '';
+    row.onclick = () => openStatusModal(m.id);
+    
     row.innerHTML = `
-      <div class="memo-left">
-        <div class="memo-ref">${m.ref || '—'}</div>
-        <div class="memo-purpose">${m.purpose}</div>
-        <div class="memo-meta">
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${m.date}</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>KES ${m.amount}</span>
-          ${m.payee ? `<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${m.payee}</span>` : ''}
-        </div>
-      </div>
-      <div class="memo-right">
-        <div class="stage-wrap">${stage1Badge} ${stage2Badge}</div>
-        <button class="update-btn" onclick="openStatusModal('${m.id}')">Update</button>
-      </div>`;
-    list.appendChild(row);
+      <td style="padding:10px 14px;border-bottom:1px solid #F1F5F9;font-family:'JetBrains Mono',monospace;font-size:12px;color:#0F3D91;font-weight:600;">${m.ref || '—'}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #F1F5F9;font-weight:500;">${m.purpose}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #F1F5F9;color:#475569;">${m.date}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #F1F5F9;font-weight:600;">KES ${m.amount}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #F1F5F9;color:#475569;">${m.payee || '—'}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #F1F5F9;text-align:center;">${stage1Badge}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #F1F5F9;text-align:center;">${stage2Badge}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #F1F5F9;text-align:center;">
+        <button class="update-btn" onclick="event.stopPropagation(); openStatusModal('${m.id}')">Update</button>
+      </td>
+    `;
+    tbody.appendChild(row);
   });
 }
 
 function filterMemos(val) {
   const memos = MEMOS_DB[currentProjectId] || [];
-  const search = document.querySelector('#page-project-detail input[type=text]').value.toLowerCase();
+  const search = document.querySelector('#memo-list input[type=text]')?.value?.toLowerCase() || '';
   renderMemoList(memos, val, search);
 }
 function searchMemos(val) {
   const memos = MEMOS_DB[currentProjectId] || [];
-  const filter = document.querySelector('#page-project-detail select').value;
+  const filter = document.querySelector('#project-sub-list select')?.value || 'all';
   renderMemoList(memos, filter, val.toLowerCase());
 }
 
@@ -355,7 +472,6 @@ function openStatusModal(memoId) {
   if (!memo) return;
 
   document.getElementById('modal-ref').textContent = 'REF: ' + (memo.ref || '—');
-
   docState = { ...memo.docs };
   paymentStatus = memo.payStatus || 'pending';
   selectPaymentStatus(paymentStatus, false);
@@ -365,7 +481,6 @@ function openStatusModal(memoId) {
     document.getElementById('doc-section').classList.add('visible');
     evaluateAutoStatus();
   }
-
   openModal('status-modal');
 }
 
@@ -410,11 +525,9 @@ function buildDocGrid() {
 }
 
 function uploadDoc(docId) {
-  // Simulate R2 upload with progress
   const btn = document.getElementById('upload-btn-' + docId);
   btn.textContent = '⏳ Uploading...';
   btn.disabled = true;
-  
   setTimeout(() => {
     docState[docId] = 'uploaded';
     const naCheck = document.getElementById('na-' + docId);
@@ -491,7 +604,7 @@ function saveStatus() {
 
   closeModal('status-modal');
   const memos = MEMOS_DB[currentProjectId] || [];
-  const filter = document.querySelector('#page-project-detail select').value;
+  const filter = document.querySelector('#project-sub-list select')?.value || 'all';
   renderMemoList(memos, filter);
 
   const pending = memos.filter(m => m.payStatus === 'pending').length;
@@ -520,14 +633,22 @@ function saveNewProject() {
   extraProjects.push(newProj);
   MEMOS_DB[newProj.id] = [];
 
-  const ahpCount = document.getElementById('ahp-count');
-  if (ahpCount && module_ === 'AHP') {
-    ahpCount.textContent = (PROJECTS.ahp.length + extraProjects.filter(p=>p.module==='AHP').length);
-  }
-
   closeModal('add-project-modal');
   ['np-name','np-contractor','np-county','np-tender'].forEach(id => document.getElementById(id).value = '');
   updateDashboard();
+  
+  if (currentModuleName) {
+    const keyMap = { 
+      AHP:'ahp', Institutions:'institutions', Markets:'markets', 
+      'ESP Markets':'esp', 'Modern Markets':'modern_markets',
+      'Office':'office', 'EIA & Power Connection':'eia',
+      'Internal Memo':'internal_memo', 'Assets':'assets'
+    };
+    const key = keyMap[currentModuleName];
+    const projs = (PROJECTS[key] || []).concat(extraProjects.filter(p => p.module === currentModuleName));
+    const color = projs.length ? projs[0].color : '#0F3D91';
+    renderSubProjectTable(projs, color);
+  }
   alert(`Project "${name}" added successfully.`);
 }
 
@@ -561,7 +682,7 @@ function saveNewMemo() {
 
   const memos = MEMOS_DB[currentProjectId];
   document.getElementById('detail-total').textContent = memos.length;
-  const filter = document.querySelector('#page-project-detail select').value;
+  const filter = document.querySelector('#project-sub-list select')?.value || 'all';
   renderMemoList(memos, filter);
   updateDashboard();
 }
@@ -664,18 +785,15 @@ function confirmImport() {
   updateDashboard();
 }
 
-// ── Utilities ──────────────────────────────────────────────────────────────────
 function simulateExport() {
   alert('📄 Export simulation:\n\nIn the final system, this will generate a downloadable Excel, PDF, or CSV report based on the current data view.');
 }
 
-// ── Logout ────────────────────────────────────────────────────────────────────
 function logout() {
   document.getElementById('app').classList.remove('active');
   document.getElementById('login-screen').style.display = 'flex';
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   renderNoticeboard();
   updateDashboard();
