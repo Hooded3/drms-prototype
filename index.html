@@ -193,14 +193,19 @@
 
       <!-- PROJECTS -->
       <div class="page" id="page-projects">
-        <div class="page-head"><div><h1>Projects</h1><div class="sub">All active project categories</div></div></div>
+        <div class="page-head">
+          <div><h1>Projects</h1><div class="sub">All active project categories — click a project to view its memos</div></div>
+          <button class="btn btn-navy" onclick="openModal('add-project-modal')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Project
+          </button>
+        </div>
         <div class="proj-grid">
-          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div></div><h3>AHP</h3><div class="desc">Affordable Housing Programme records</div><div class="proj-stats"><div class="proj-stat"><div class="n">42</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">12</div><div class="l">Pending</div></div></div></div>
-          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:var(--emerald-dark)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 22h16M5 22V11l7-7 7 7v11"/><path d="M9 22v-6h6v6"/></svg></div></div><h3>Institutions</h3><div class="desc">Schools, health centres, public offices</div><div class="proj-stats"><div class="proj-stat"><div class="n">58</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">9</div><div class="l">Pending</div></div></div></div>
-          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9M4 9h16"/></svg></div></div><h3>Markets</h3><div class="desc">Market construction &amp; rehabilitation</div><div class="proj-stats"><div class="proj-stat"><div class="n">31</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">5</div><div class="l">Pending</div></div></div></div>
-          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div></div><h3>Office</h3><div class="desc">Internal office administration records</div><div class="proj-stats"><div class="proj-stat"><div class="n">24</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">3</div><div class="l">Pending</div></div></div></div>
-          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:#0891B2"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h7l-1 8 11-14h-7l1-6z"/></svg></div></div><h3>EIA &amp; Power Connection</h3><div class="desc">Environmental impact &amp; power approvals</div><div class="proj-stats"><div class="proj-stat"><div class="n">19</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">6</div><div class="l">Pending</div></div></div></div>
-          <div class="proj-card" onclick="go('memos')"><div class="proj-top"><div class="proj-icon" style="background:#DB2777"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div></div><h3>Internal Memos</h3><div class="desc">Cross-department correspondence</div><div class="proj-stats"><div class="proj-stat"><div class="n">40</div><div class="l">Records</div></div><div class="proj-stat"><div class="n">2</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="openProjectDetail('AHP','var(--navy)')"><div class="proj-top"><div class="proj-icon" style="background:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div></div><h3>AHP</h3><div class="desc">Affordable Housing Programme — click to view sub-projects &amp; memos</div><div class="proj-stats"><div class="proj-stat"><div class="n" id="ahp-count">3</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">8</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="openModuleList('Institutions','#16A34A')"><div class="proj-top"><div class="proj-icon" style="background:var(--emerald-dark)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 22h16M5 22V11l7-7 7 7v11"/><path d="M9 22v-6h6v6"/></svg></div></div><h3>Institutions</h3><div class="desc">Schools, health centres, public offices</div><div class="proj-stats"><div class="proj-stat"><div class="n">2</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">4</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="openModuleList('Markets','#D97706')"><div class="proj-top"><div class="proj-icon" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l1-5h16l1 5M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9M4 9h16"/></svg></div></div><h3>Markets</h3><div class="desc">Market construction &amp; rehabilitation</div><div class="proj-stats"><div class="proj-stat"><div class="n">2</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">3</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="openProjectDetail('Office','#7C3AED')"><div class="proj-top"><div class="proj-icon" style="background:#7C3AED"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div></div><h3>Office</h3><div class="desc">Internal office administration records</div><div class="proj-stats"><div class="proj-stat"><div class="n">1</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">2</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="openProjectDetail('EIA & Power Connection','#0891B2')"><div class="proj-top"><div class="proj-icon" style="background:#0891B2"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h7l-1 8 11-14h-7l1-6z"/></svg></div></div><h3>EIA &amp; Power Connection</h3><div class="desc">Environmental impact &amp; power approvals</div><div class="proj-stats"><div class="proj-stat"><div class="n">1</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">3</div><div class="l">Pending</div></div></div></div>
+          <div class="proj-card" onclick="openProjectDetail('Internal Memo','#DB2777')"><div class="proj-top"><div class="proj-icon" style="background:#DB2777"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h4"/></svg></div></div><h3>Internal Memos</h3><div class="desc">Cross-department correspondence</div><div class="proj-stats"><div class="proj-stat"><div class="n">1</div><div class="l">Sub-Projects</div></div><div class="proj-stat"><div class="n" style="color:var(--amber)">1</div><div class="l">Pending</div></div></div></div>
         </div>
       </div>
 
@@ -367,6 +372,140 @@
         </div>
       </div>
 
+      <!-- ===== PROJECT DETAIL PAGE ===== -->
+      <div class="page" id="page-project-detail">
+        <div class="back-btn" onclick="go('projects', document.querySelector('[data-page=projects]'))">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          Back to Projects
+        </div>
+        <div class="project-detail-header">
+          <div class="pdh-left">
+            <div class="pdh-icon" id="detail-icon" style="background:var(--navy)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div>
+              <div class="pdh-name" id="detail-name">Diani Whitehouse AHP</div>
+              <div class="pdh-meta" id="detail-meta">Contractor: Sihaam Construction Ltd · T.NO: 218 · Msambweni</div>
+            </div>
+          </div>
+          <div class="pdh-stats">
+            <div class="pdh-stat"><div class="n" id="detail-total">0</div><div class="l">Total</div></div>
+            <div class="pdh-stat"><div class="n" style="color:var(--amber)" id="detail-pending">0</div><div class="l">Pending</div></div>
+            <div class="pdh-stat"><div class="n" style="color:var(--emerald)" id="detail-surrendered">0</div><div class="l">Surrendered</div></div>
+          </div>
+        </div>
+        <div class="table-toolbar" style="background:var(--card);border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--line-soft);border-bottom:none;">
+          <div class="filters">
+            <select onchange="filterMemos(this.value)">
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="partially_surrendered">Partially Surrendered</option>
+              <option value="not_surrendered">Not Surrendered</option>
+              <option value="fully_surrendered">Fully Surrendered</option>
+            </select>
+            <input type="text" placeholder="Search memos..." oninput="searchMemos(this.value)" style="border:1.5px solid var(--line);border-radius:7px;padding:7px 11px;font-size:12.5px;font-family:'Inter',sans-serif;" />
+          </div>
+          <button class="btn btn-navy" onclick="openAddMemoModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add Memo
+          </button>
+        </div>
+        <div id="memo-list" class="memo-list" style="background:var(--card);border:1px solid var(--line-soft);border-radius:0 0 var(--radius) var(--radius);padding:14px 16px;min-height:160px;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== MEMO STATUS MODAL ===== -->
+<div class="modal-overlay" id="status-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2>Update Memo Status</h2>
+        <div class="sub" id="modal-ref">REF: —</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('status-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="stage-label">Stage 1 — Payment Status</div>
+      <div class="status-toggle">
+        <div class="status-opt" id="opt-pending" onclick="selectPaymentStatus('pending')">
+          <div class="opt-icon" style="background:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <div class="opt-label">Pending</div><div class="opt-desc">Not yet paid</div>
+        </div>
+        <div class="status-opt" id="opt-paid" onclick="selectPaymentStatus('paid')">
+          <div class="opt-icon" style="background:#3B82F6"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <div class="opt-label">Paid</div><div class="opt-desc">Payment released</div>
+        </div>
+      </div>
+      <div class="doc-section" id="doc-section">
+        <div class="doc-section-title">Stage 2 — Document Surrender Checklist</div>
+        <div class="doc-section-sub">Upload each document or tick N/A. Once all are resolved the surrender status updates automatically.</div>
+        <div class="doc-grid" id="doc-grid"></div>
+        <div class="auto-status" id="auto-status-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="auto-status-icon"><circle cx="12" cy="12" r="9"/></svg>
+          <div><div class="ast" id="auto-status-text"></div><div class="asd" id="auto-status-desc"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('status-modal')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveStatus()">Save Status</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD PROJECT MODAL ===== -->
+<div class="modal-overlay" id="add-project-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h2>Add New Project</h2><div class="sub">Register a new project in the system</div></div>
+      <button class="modal-close" onclick="closeModal('add-project-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="add-proj-form">
+        <div class="form-field"><label>Project Name</label><input type="text" id="np-name" placeholder="e.g. Tezo AHP Phase 2" /></div>
+        <div class="form-field"><label>Module</label><select id="np-module"><option>AHP</option><option>Institutions</option><option>Markets</option><option>Office</option><option>EIA &amp; Power Connection</option></select></div>
+        <div class="form-field"><label>Contractor</label><input type="text" id="np-contractor" placeholder="e.g. M/s Broad Contractors Ltd" /></div>
+        <div class="form-field"><label>County / Constituency</label><input type="text" id="np-county" placeholder="e.g. Kilifi North" /></div>
+        <div class="form-field"><label>Tender Number</label><input type="text" id="np-tender" placeholder="e.g. 393" /></div>
+        <div class="form-field"><label>Project Status</label><select id="np-status"><option>Active</option><option>Under Evaluation</option><option>Under Procurement</option><option>Advertised</option><option>Terminated</option></select></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('add-project-modal')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveNewProject()">Add Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD MEMO MODAL ===== -->
+<div class="modal-overlay" id="add-memo-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h2>Add New Memo</h2><div class="sub" id="add-memo-project-name">Project: —</div></div>
+      <button class="modal-close" onclick="closeModal('add-memo-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="add-proj-form">
+        <div class="form-field"><label>Reference Number</label><input type="text" id="nm-ref" placeholder="e.g. SDHUD/RL/AHP/CST/NE/218/VOL.1(21)" /></div>
+        <div class="form-field"><label>Purpose</label><input type="text" id="nm-purpose" placeholder="Brief description" /></div>
+        <div class="form-field"><label>Date</label><input type="date" id="nm-date" /></div>
+        <div class="form-field"><label>Amount (KES)</label><input type="text" id="nm-amount" placeholder="e.g. 125,000" /></div>
+        <div class="form-field"><label>Payee</label><input type="text" id="nm-payee" placeholder="Contractor / person name" /></div>
+        <div class="form-field"><label>Additional Info</label><input type="text" id="nm-info" placeholder="Any remarks..." /></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('add-memo-modal')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveNewMemo()">Add Memo</button>
     </div>
   </div>
 </div>
