@@ -46,7 +46,7 @@ const MEMOS_DB = {
   ],
   p2: [
     { id:'m6',  ref:'SDHUD/AHP/CRG/234/VOL.1(31)',          purpose:'Facilitation for site meeting',                        date:'26 May 2026', amount:'121,500',   payee:'Mnyazi Zuma',               payStatus:'pending',  s2status:null, docs:{} },
-    { id:'m7',  ref:'SDHUD/RL/AHP/CRG/234/VOL.1(13)',       purpose:'Presidential visit',                                   date:'21 May 2026', amount:'250,000',   payee:'John Karanja & Hussein Ali', payStatus:'paid', s2status:'fully_surrendered', docs:{memo:'uploaded',rfi:'uploaded',report:'uploaded',wticket:'uploaded',attendance:'uploaded',receipts:'uploaded',other:'na'} },
+    { id:'m7',  ref:'SDHUD/RL/AHP/CRG/234/VOL.1(13)',       purpose:'Presidential visit',                                   date:'21 May 2026', amount:'250,000',   payee:'John Karanja & Hussein Ali', payStatus:'paid', s2status:'partially_surrendered', docs:{memo:'uploaded',rfi:'uploaded',report:'uploaded',wticket:'uploaded',attendance:'uploaded',receipts:'uploaded',other:'na'} },
     { id:'m8',  ref:'SDHUD/AHP/CRG/234/VOL.1(018)',         purpose:'Facilitation of ESIA full study',                      date:'13 Apr 2026', amount:'282,000',   payee:'Anthony Ng\'ang\'a',        payStatus:'pending',  s2status:null, docs:{} },
   ],
   p3: [
@@ -59,7 +59,7 @@ const MEMOS_DB = {
   ],
   p5: [
     { id:'m13', ref:'SDHUD/RL/AHP/CRG/539/VOL.1(20)',       purpose:'Instruction for payment in support of CSR initiative', date:'26 Jun 2026', amount:'100,000',   payee:'Weaver Bird',               payStatus:'pending',  s2status:null, docs:{} },
-    { id:'m14', ref:'SDHUD/RL/CST/NE/AHP/539/VOL.1(11)',    purpose:'Site meeting',                                         date:'25 Jun 2026', amount:'38,600',    payee:'Siti Zuma',                 payStatus:'paid', s2status:'fully_surrendered', docs:{memo:'uploaded',rfi:'uploaded',report:'uploaded',wticket:'uploaded',attendance:'uploaded',receipts:'uploaded',other:'uploaded'} },
+    { id:'m14', ref:'SDHUD/RL/CST/NE/AHP/539/VOL.1(11)',    purpose:'Site meeting',                                         date:'25 Jun 2026', amount:'38,600',    payee:'Siti Zuma',                 payStatus:'paid', s2status:'partially_surrendered', docs:{memo:'uploaded',rfi:'uploaded',report:'uploaded',wticket:'uploaded',attendance:'uploaded',receipts:'uploaded',other:'uploaded'} },
   ],
   p6: [
     { id:'m15', ref:'SDHUD/CRG/2023-2024/184/VOL.1(56/1)',  purpose:'Project managers representative office facilitation',  date:'24 Feb 2026', amount:'1,000,000', payee:'John Karanja & Hussein Ali', payStatus:'pending',  s2status:null, docs:{} },
@@ -137,24 +137,33 @@ function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
 
-// ── Project list view (AHP module-level) ──────────────────────────────────────
+// ── Project list view ──────────────────────────────────────────────────────────
+// ========== UPDATED: AHP NOW WORKS LIKE OTHER MODULES ==========
 function openProjectDetail(moduleName, color) {
-  // For modules with a single logical group, show their memos directly
-  // Map module name to a sample project
-  const map = {
-    'Office':               { id:'office-main', name:'Office Records (VOL 1 & 2)', contractor:'Internal', tender:'—', county:'HQ', color },
-    'EIA & Power Connection':{ id:'eia-main',   name:'EIA & Power Connection',      contractor:'Various',  tender:'—', county:'Coast Region', color },
-    'Internal Memo':        { id:'im-main',      name:'General Internal Memos',      contractor:'Internal', tender:'—', county:'HQ', color },
-  };
-  const proj = map[moduleName];
-  if (proj) {
-    loadProjectDetail(proj.id, proj.name, proj.contractor, proj.tender, proj.county, color, []);
+  // AHP is now treated as a multi-project module (like Institutions & Markets)
+  // It should go to openModuleList(), not directly to a single project.
+  
+  // Only for single-module groups (Office, EIA, Internal Memo) do we go direct to memos.
+  const singleModules = ['Office', 'EIA & Power Connection', 'Internal Memo'];
+  
+  if (singleModules.includes(moduleName)) {
+    const map = {
+      'Office':               { id:'office-main', name:'Office Records (VOL 1 & 2)', contractor:'Internal', tender:'—', county:'HQ', color },
+      'EIA & Power Connection':{ id:'eia-main',   name:'EIA & Power Connection',      contractor:'Various',  tender:'—', county:'Coast Region', color },
+      'Internal Memo':        { id:'im-main',      name:'General Internal Memos',      contractor:'Internal', tender:'—', county:'HQ', color },
+    };
+    const proj = map[moduleName];
+    if (proj) {
+      loadProjectDetail(proj.id, proj.name, proj.contractor, proj.tender, proj.county, color, []);
+    }
+  } else {
+    // For AHP, Institutions, Markets, show sub-project list
+    openModuleList(moduleName, color);
   }
 }
 
 function openModuleList(moduleName, color) {
   // For multi-project modules (AHP, Institutions, Markets) show sub-project list
-  // We reuse project detail page but show sub-project cards inline
   const keyMap = { AHP:'ahp', Institutions:'institutions', Markets:'markets' };
   const key = keyMap[moduleName];
   const projs = (PROJECTS[key] || []).concat(extraProjects.filter(p => p.module === moduleName));
@@ -172,7 +181,7 @@ function openModuleList(moduleName, color) {
   projs.forEach(p => {
     const memos = MEMOS_DB[p.id] || [];
     const pending = memos.filter(m => m.payStatus === 'pending').length;
-    const surr = memos.filter(m => m.s2status === 'fully_surrendered').length;
+    const surr = memos.filter(m => m.s2status === 'partially_surrendered').length;
 
     const card = document.createElement('div');
     card.style.cssText = 'background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:8px;';
@@ -211,7 +220,7 @@ function loadProjectDetail(projId, name, contractor, tender, county, color, memo
 
   const memoData = MEMOS_DB[projId] || memos;
   const pending  = memoData.filter(m => m.payStatus === 'pending').length;
-  const surr     = memoData.filter(m => m.s2status === 'fully_surrendered').length;
+  const surr     = memoData.filter(m => m.s2status === 'partially_surrendered').length;
 
   document.getElementById('detail-total').textContent     = memoData.length;
   document.getElementById('detail-pending').textContent   = pending;
@@ -234,7 +243,6 @@ function renderMemoList(memos, filter='all', search='') {
     if (filter === 'paid')                 return m.payStatus === 'paid' && !m.s2status;
     if (filter === 'partially_surrendered') return m.s2status === 'partially_surrendered';
     if (filter === 'not_surrendered')      return m.s2status === 'not_surrendered';
-    if (filter === 'fully_surrendered')    return m.s2status === 'fully_surrendered';
     return true;
   });
   if (search) filtered = filtered.filter(m =>
@@ -256,9 +264,11 @@ function renderMemoList(memos, filter='all', search='') {
 
     let stage2Badge = '';
     if (m.payStatus === 'paid') {
-      if (s2 === 'fully_surrendered')    stage2Badge = '<span class="stage-pill s-full">Fully Surrendered</span>';
-      else if (s2 === 'partially_surrendered') stage2Badge = '<span class="stage-pill s-partial">Partial</span>';
-      else                               stage2Badge = '<span class="stage-pill s-not-surr">Not Surrendered</span>';
+      if (s2 === 'partially_surrendered') {
+        stage2Badge = '<span class="stage-pill s-partial">Partially Surrendered</span>';
+      } else {
+        stage2Badge = '<span class="stage-pill s-not-surr">Not Surrendered</span>';
+      }
     }
 
     const row = document.createElement('div');
@@ -428,16 +438,13 @@ function saveStatus() {
   if (paymentStatus === 'pending') {
     memo.s2status = null;
   } else {
-    const allResolved = DOC_TYPES.every(d => docState[d.id] === 'uploaded' || docState[d.id] === 'na');
+    // User note: Only 2 surrender states.
+    // Rule: If any document is uploaded (not N/A) -> Partially Surrendered.
+    // Otherwise -> Not Surrendered.
     const anyUploaded = DOC_TYPES.some(d => docState[d.id] === 'uploaded');
-    const allNA       = DOC_TYPES.every(d => docState[d.id] === 'na');
 
-    if (!allResolved) {
-      memo.s2status = 'not_surrendered';
-    } else if (anyUploaded && !allNA) {
-      // Check if ALL docs uploaded (no NA)
-      const allUploaded = DOC_TYPES.every(d => docState[d.id] === 'uploaded');
-      memo.s2status = allUploaded ? 'fully_surrendered' : 'partially_surrendered';
+    if (anyUploaded) {
+      memo.s2status = 'partially_surrendered';
     } else {
       memo.s2status = 'not_surrendered';
     }
@@ -451,7 +458,7 @@ function saveStatus() {
 
   // Update header stats
   const pending = memos.filter(m => m.payStatus === 'pending').length;
-  const surr    = memos.filter(m => m.s2status === 'fully_surrendered').length;
+  const surr    = memos.filter(m => m.s2status === 'partially_surrendered' || m.s2status === 'fully_surrendered').length;
   document.getElementById('detail-pending').textContent   = pending;
   document.getElementById('detail-surrendered').textContent = surr;
 }
