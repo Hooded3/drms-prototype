@@ -3,6 +3,12 @@ let currentUser  = { name:'Nickson', role:'admin', email:'nickson@portal.go.ke' 
 let currentMemoId = null;
 let currentProjectId = null;
 let paymentStatus = 'pending';
+let importLocked = false; // Simulates one-time import lock
+let notices = [
+  { id:'n1', title:'Important: New Surrender Policy Effective Immediately', content:'All memos must be surrendered within 14 days of payment. Please ensure all documents are uploaded to the system before the deadline.', date:'2 Jul 2026', pinned:true, author:'Admin' },
+  { id:'n2', title:'System Maintenance Scheduled for Friday', content:'The DRMS will be offline for scheduled maintenance on Friday, 10th July 2026 from 18:00 to 20:00 EAT. Please save all work before then.', date:'30 Jun 2026', pinned:false, author:'IT Department' },
+  { id:'n3', title:'Reminder: Monthly Reports Due', content:'All project managers are reminded to submit their monthly expenditure reports by the 5th of every month. Late submissions will be flagged.', date:'28 Jun 2026', pinned:false, author:'Records Office' },
+];
 
 // Document checklist items
 const DOC_TYPES = [
@@ -77,6 +83,8 @@ function login() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').classList.add('active');
   updateUserChip();
+  applyRolePermissions();
+  updateDashboard();
 }
 
 function switchLoginUser() {
@@ -100,9 +108,31 @@ function updateUserChip() {
   if (el_name)   el_name.textContent   = currentUser.name;
   if (el_role)   el_role.textContent   = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
   if (el_avatar) el_avatar.textContent = currentUser.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  // Also update sidebar foot
   const foot = document.querySelector('.sb-foot b');
   if (foot) foot.textContent = currentUser.name;
+  document.getElementById('sb-role').textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+}
+
+// ── Role Switching ─────────────────────────────────────────────────────────────
+function switchRole(role) {
+  currentUser.role = role;
+  updateUserChip();
+  applyRolePermissions();
+}
+
+function applyRolePermissions() {
+  const isAdmin = currentUser.role === 'admin';
+  const isOfficer = currentUser.role === 'officer' || isAdmin;
+  const isManager = currentUser.role === 'manager' || isAdmin;
+
+  // Nav items
+  document.getElementById('nav-import').style.display = isAdmin ? 'flex' : 'none';
+  
+  // Buttons
+  document.getElementById('btn-add-project').style.display = isAdmin ? 'flex' : 'none';
+  document.getElementById('btn-add-memo').style.display = isOfficer ? 'flex' : 'none';
+  document.getElementById('btn-add-memo-detail').style.display = isOfficer ? 'flex' : 'none';
+  document.getElementById('btn-add-notice').style.display = isManager ? 'flex' : 'none';
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────────
@@ -137,33 +167,48 @@ function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
 
-// ── Project list view ──────────────────────────────────────────────────────────
-// ========== UPDATED: AHP NOW WORKS LIKE OTHER MODULES ==========
-function openProjectDetail(moduleName, color) {
-  // AHP is now treated as a multi-project module (like Institutions & Markets)
-  // It should go to openModuleList(), not directly to a single project.
-  
-  // Only for single-module groups (Office, EIA, Internal Memo) do we go direct to memos.
-  const singleModules = ['Office', 'EIA & Power Connection', 'Internal Memo'];
-  
-  if (singleModules.includes(moduleName)) {
-    const map = {
-      'Office':               { id:'office-main', name:'Office Records (VOL 1 & 2)', contractor:'Internal', tender:'—', county:'HQ', color },
-      'EIA & Power Connection':{ id:'eia-main',   name:'EIA & Power Connection',      contractor:'Various',  tender:'—', county:'Coast Region', color },
-      'Internal Memo':        { id:'im-main',      name:'General Internal Memos',      contractor:'Internal', tender:'—', county:'HQ', color },
-    };
-    const proj = map[moduleName];
-    if (proj) {
-      loadProjectDetail(proj.id, proj.name, proj.contractor, proj.tender, proj.county, color, []);
-    }
-  } else {
-    // For AHP, Institutions, Markets, show sub-project list
-    openModuleList(moduleName, color);
-  }
+// ── Dashboard ──────────────────────────────────────────────────────────────────
+function updateDashboard() {
+  // Calculate real stats from data
+  let totalProjects = 0;
+  let pendingMemos = 0;
+  let surrendered = 0;
+  let totalAssets = 468; // Static for demo
+
+  Object.keys(PROJECTS).forEach(key => {
+    totalProjects += PROJECTS[key].length;
+  });
+  totalProjects += extraProjects.length;
+
+  Object.values(MEMOS_DB).forEach(memos => {
+    memos.forEach(m => {
+      if (m.payStatus === 'pending') pendingMemos++;
+      if (m.s2status === 'partially_surrendered' || m.s2status === 'fully_surrendered') surrendered++;
+    });
+  });
+
+  document.getElementById('kpi-total-projects').textContent = totalProjects;
+  document.getElementById('kpi-pending-memos').textContent = pendingMemos;
+  document.getElementById('kpi-surrendered').textContent = surrendered;
+  document.getElementById('kpi-total-assets').textContent = totalAssets;
+
+  // Update pie chart percentages
+  const total = pendingMemos + surrendered + 20; // +20 simulated partial/overdue
+  const pctSurrendered = Math.round((surrendered / total) * 100);
+  const pctPending = Math.round((pendingMemos / total) * 100);
+  const pctPartial = Math.round(((total - surrendered - pendingMemos) / total) * 50);
+  document.getElementById('legend-surrendered').textContent = pctSurrendered + '%';
+  document.getElementById('legend-pending').textContent = pctPending + '%';
+  document.getElementById('legend-partial').textContent = Math.max(10, 100 - pctSurrendered - pctPending) + '%';
+  document.getElementById('legend-overdue').textContent = Math.max(5, 100 - pctSurrendered - pctPending - 20) + '%';
+
+  // Update project cards on projects page
+  const ahpCount = document.getElementById('ahp-count');
+  if (ahpCount) ahpCount.textContent = PROJECTS.ahp.length + extraProjects.filter(p=>p.module==='AHP').length;
 }
 
+// ── Project list view ──────────────────────────────────────────────────────────
 function openModuleList(moduleName, color) {
-  // For multi-project modules (AHP, Institutions, Markets) show sub-project list
   const keyMap = { AHP:'ahp', Institutions:'institutions', Markets:'markets' };
   const key = keyMap[moduleName];
   const projs = (PROJECTS[key] || []).concat(extraProjects.filter(p => p.module === moduleName));
@@ -311,17 +356,11 @@ function openStatusModal(memoId) {
 
   document.getElementById('modal-ref').textContent = 'REF: ' + (memo.ref || '—');
 
-  // Reset doc state from memo
   docState = { ...memo.docs };
-
-  // Set stage 1
   paymentStatus = memo.payStatus || 'pending';
   selectPaymentStatus(paymentStatus, false);
-
-  // Build doc grid
   buildDocGrid();
 
-  // If already paid show doc section
   if (paymentStatus === 'paid') {
     document.getElementById('doc-section').classList.add('visible');
     evaluateAutoStatus();
@@ -371,18 +410,22 @@ function buildDocGrid() {
 }
 
 function uploadDoc(docId) {
-  // Simulate upload
-  docState[docId] = 'uploaded';
-  // Uncheck NA
-  const naCheck = document.getElementById('na-' + docId);
-  if (naCheck) naCheck.checked = false;
-  // Update row
-  const row = document.getElementById('doc-row-' + docId);
-  row.className = 'doc-row uploaded';
+  // Simulate R2 upload with progress
   const btn = document.getElementById('upload-btn-' + docId);
-  btn.textContent = '✓ Uploaded';
-  btn.classList.add('done');
-  evaluateAutoStatus();
+  btn.textContent = '⏳ Uploading...';
+  btn.disabled = true;
+  
+  setTimeout(() => {
+    docState[docId] = 'uploaded';
+    const naCheck = document.getElementById('na-' + docId);
+    if (naCheck) naCheck.checked = false;
+    const row = document.getElementById('doc-row-' + docId);
+    row.className = 'doc-row uploaded';
+    btn.textContent = '✓ Uploaded';
+    btn.classList.add('done');
+    btn.disabled = false;
+    evaluateAutoStatus();
+  }, 1000);
 }
 
 function toggleNA(docId, checked) {
@@ -438,11 +481,7 @@ function saveStatus() {
   if (paymentStatus === 'pending') {
     memo.s2status = null;
   } else {
-    // User note: Only 2 surrender states.
-    // Rule: If any document is uploaded (not N/A) -> Partially Surrendered.
-    // Otherwise -> Not Surrendered.
     const anyUploaded = DOC_TYPES.some(d => docState[d.id] === 'uploaded');
-
     if (anyUploaded) {
       memo.s2status = 'partially_surrendered';
     } else {
@@ -451,16 +490,15 @@ function saveStatus() {
   }
 
   closeModal('status-modal');
-  // Refresh list
   const memos = MEMOS_DB[currentProjectId] || [];
   const filter = document.querySelector('#page-project-detail select').value;
   renderMemoList(memos, filter);
 
-  // Update header stats
   const pending = memos.filter(m => m.payStatus === 'pending').length;
   const surr    = memos.filter(m => m.s2status === 'partially_surrendered' || m.s2status === 'fully_surrendered').length;
   document.getElementById('detail-pending').textContent   = pending;
   document.getElementById('detail-surrendered').textContent = surr;
+  updateDashboard();
 }
 
 // ── Add Project ───────────────────────────────────────────────────────────────
@@ -482,16 +520,14 @@ function saveNewProject() {
   extraProjects.push(newProj);
   MEMOS_DB[newProj.id] = [];
 
-  // Update card count
   const ahpCount = document.getElementById('ahp-count');
   if (ahpCount && module_ === 'AHP') {
     ahpCount.textContent = (PROJECTS.ahp.length + extraProjects.filter(p=>p.module==='AHP').length);
   }
 
   closeModal('add-project-modal');
-  // Clear form
   ['np-name','np-contractor','np-county','np-tender'].forEach(id => document.getElementById(id).value = '');
-
+  updateDashboard();
   alert(`Project "${name}" added successfully.`);
 }
 
@@ -527,6 +563,110 @@ function saveNewMemo() {
   document.getElementById('detail-total').textContent = memos.length;
   const filter = document.querySelector('#page-project-detail select').value;
   renderMemoList(memos, filter);
+  updateDashboard();
+}
+
+// ── Noticeboard ────────────────────────────────────────────────────────────────
+function saveNewNotice() {
+  const title = document.getElementById('nn-title').value.trim();
+  const content = document.getElementById('nn-content').value.trim();
+  const pinned = document.getElementById('nn-pin').value === 'yes';
+
+  if (!title || !content) { alert('Please fill in both title and content.'); return; }
+
+  const newNotice = {
+    id: 'n' + Date.now(),
+    title, content,
+    date: new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),
+    pinned, author: currentUser.name
+  };
+  notices.unshift(newNotice);
+  renderNoticeboard();
+  closeModal('add-notice-modal');
+  document.getElementById('nn-title').value = '';
+  document.getElementById('nn-content').value = '';
+  alert('Notice posted successfully.');
+}
+
+function renderNoticeboard() {
+  const grid = document.getElementById('notice-grid');
+  grid.innerHTML = '';
+  notices.forEach(n => {
+    const card = document.createElement('div');
+    card.className = 'notice-card' + (n.pinned ? ' pinned' : '');
+    card.innerHTML = `
+      <div class="notice-header">
+        ${n.pinned ? '<span class="notice-pin">📌</span>' : ''}
+        <span class="notice-date">${n.date}</span>
+        ${n.pinned ? '<span class="notice-badge pinned">Pinned</span>' : ''}
+      </div>
+      <h3>${n.title}</h3>
+      <p>${n.content}</p>
+      <div class="notice-footer"><span>— ${n.author}</span></div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ── Import Simulation ──────────────────────────────────────────────────────────
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (importLocked) {
+    alert('Import is already locked. This system only allows a single workbook upload.');
+    return;
+  }
+
+  const zone = document.getElementById('import-zone');
+  zone.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="animation:spin 1s linear infinite;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg>
+    <h3>Processing workbook...</h3>
+    <p>Please wait while we parse the data.</p>
+  `;
+
+  setTimeout(() => {
+    const preview = document.getElementById('import-preview');
+    preview.style.display = 'block';
+    document.getElementById('import-results').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0;">
+        <div style="background:#EFF6FF;padding:12px;border-radius:8px;text-align:center;">
+          <div style="font-size:22px;font-weight:700;color:var(--navy);">64</div>
+          <div style="font-size:11px;color:var(--muted);">AHP Projects</div>
+        </div>
+        <div style="background:#F0FDF4;padding:12px;border-radius:8px;text-align:center;">
+          <div style="font-size:22px;font-weight:700;color:var(--emerald);">52</div>
+          <div style="font-size:11px;color:var(--muted);">ESP Markets</div>
+        </div>
+        <div style="background:#FFFBEB;padding:12px;border-radius:8px;text-align:center;">
+          <div style="font-size:22px;font-weight:700;color:var(--amber);">49</div>
+          <div style="font-size:11px;color:var(--muted);">Institutions</div>
+        </div>
+      </div>
+      <div style="background:#F8FAFC;padding:14px;border-radius:8px;font-size:12px;color:var(--muted);">
+        ✅ Google Drive links detected in <b>37</b> records. These will be stored as external file references.
+      </div>
+    `;
+    document.getElementById('import-zone').style.display = 'none';
+  }, 2000);
+}
+
+function confirmImport() {
+  importLocked = true;
+  document.getElementById('import-preview').style.display = 'none';
+  document.getElementById('import-sub').textContent = '✓ Workbook imported and locked. System is ready.';
+  document.getElementById('import-zone').innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="1.6"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+    <h3 style="color:var(--emerald);">Import Complete</h3>
+    <p>All data has been loaded. The import function is now locked permanently.</p>
+  `;
+  document.getElementById('import-zone').style.display = 'block';
+  updateDashboard();
+}
+
+// ── Utilities ──────────────────────────────────────────────────────────────────
+function simulateExport() {
+  alert('📄 Export simulation:\n\nIn the final system, this will generate a downloadable Excel, PDF, or CSV report based on the current data view.');
 }
 
 // ── Logout ────────────────────────────────────────────────────────────────────
@@ -534,3 +674,10 @@ function logout() {
   document.getElementById('app').classList.remove('active');
   document.getElementById('login-screen').style.display = 'flex';
 }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  renderNoticeboard();
+  updateDashboard();
+  applyRolePermissions();
+});
